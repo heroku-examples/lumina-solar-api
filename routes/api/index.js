@@ -91,4 +91,54 @@ export default async function (fastify, _opts) {
       reply.send(rows);
     }
   );
+
+  fastify.get(
+    '/summary/:systemId',
+    {
+      schema: {
+        description: 'Get summary for a system',
+        tags: ['metrics'],
+        params: {
+          type: 'object',
+          description: 'The system ID',
+          properties: {
+            systemId: { type: 'string' },
+          },
+        },
+        response: {
+          200: {
+            description: 'Summary for the system',
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                date: { type: 'string', format: 'date' },
+                total_energy_produced: { type: 'number' },
+                total_energy_consumed: { type: 'number' },
+              },
+            },
+          },
+          500: {
+            description: 'Internal Server Error',
+            $ref: 'error#',
+          },
+        },
+      },
+    },
+    async function (request, reply) {
+      const { systemId } = request.params;
+      const { db } = fastify;
+      const { rows } = await db.query(
+        `SELECT datetime::date as date, 
+                SUM(energy_produced) as total_energy_produced, 
+                SUM(energy_consumed) as total_energy_consumed 
+         FROM metrics 
+         WHERE system_id = $1 
+         GROUP BY datetime::date
+         ORDER BY datetime::date DESC`,
+        [systemId]
+      );
+      reply.send(rows);
+    }
+  );
 }
