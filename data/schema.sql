@@ -1,3 +1,11 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Create the 'systems' table
+CREATE TABLE systems (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    address TEXT NOT NULL
+);
+
 -- Create the 'metrics' table
 CREATE TABLE metrics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
