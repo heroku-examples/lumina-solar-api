@@ -1,24 +1,45 @@
-# Getting Started with [Fastify-CLI](https://www.npmjs.com/package/fastify-cli)
+# Lumina Solar API
 
-This project was bootstrapped with Fastify-CLI.
+API for use in software demos.
 
-## Available Scripts
+## Prerequisites
+* A [Heroku](https://www.heroku.com) account
 
-In the project directory, you can run:
+* [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#install-the-heroku-cli) installed
 
-### `npm run dev`
 
-To start the app in dev mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Deploying to Heroku
+Clone this repo and open the resulting directory in your terminal
 
-### `npm start`
+Create **Heroku app**
+```
+heroku create <username>-lumina-solar
+```
 
-For production mode
+Provision **Heroku Postgres add-on** (incurs cost)
+```
+heroku addons:create heroku-postgresql:essential-0
+```
 
-### `npm run test`
+Follow CLI instructions to “check creation process”, continue when “State” is ```created```
 
-Run the test cases.
+Deploy the app
+```
+git push heroku main
+```
 
-## Learn More
+Import the database schema
+```
+heroku run npm run setup
+```
 
-To learn Fastify, check out the [Fastify documentation](https://fastify.dev/docs/latest/).
+Seed the database with example data
+```
+heroku run node data/seed.js
+```
+
+## Usage
+
+JSON OAS schema available at path ```/api-docs/json```
+
+To browse the schema visually, open path ```/``` in a web browser
