@@ -19,6 +19,17 @@ export const metricSchema = {
   required: ['system_id', 'energy_produced', 'energy_consumed'],
 };
 
+export const summarySchema = {
+  type: 'object',
+  properties: {
+    systemid: { type: 'string', format: 'uuid' },
+    summarydate: { type: 'string', format: 'date' },
+    totalenergyproduced: { type: 'number' },
+    totalenergyconsumed: { type: 'number' },
+  },
+  required: ['systemid', 'summarydate', 'totalenergyproduced', 'totalenergyconsumed'],
+};
+
 export const errorSchema = {
   type: 'object',
   properties: {

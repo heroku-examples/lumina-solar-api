@@ -2,6 +2,7 @@ import {
   systemSchema,
   metricSchema,
   errorSchema,
+  summarySchema,
 } from '../../schemas/index.js';
 
 export default async function (fastify, _opts) {
@@ -13,6 +14,11 @@ export default async function (fastify, _opts) {
   fastify.addSchema({
     $id: 'metric',
     ...metricSchema,
+  });
+
+  fastify.addSchema({
+    $id: 'summary',
+    ...summarySchema,
   });
 
   fastify.addSchema({
@@ -109,14 +115,7 @@ export default async function (fastify, _opts) {
           200: {
             description: 'Summary for the system',
             type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                date: { type: 'string', format: 'date' },
-                total_energy_produced: { type: 'number' },
-                total_energy_consumed: { type: 'number' },
-              },
-            },
+            items: { $ref: 'summary#' },
           },
           500: {
             description: 'Internal Server Error',
@@ -138,7 +137,12 @@ export default async function (fastify, _opts) {
          ORDER BY datetime::date DESC`,
         [systemId]
       );
-      reply.send(rows);
+      reply.send(rows.map(x => ({
+        systemid: systemId,
+        summarydate: x.date,
+        totalenergyproduced: x.total_energy_produced,
+        totalenergyconsumed: x.total_energy_consumed
+      })));
     }
   );
 }
