@@ -1,0 +1,235 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Lumina Solar API",
+		"description": "Provides access to the Lumina Solar API",
+		"version": "1.0"
+	},
+	"components": {
+		"schemas": {
+			"system": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"address": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"address"
+				]
+			},
+			"metric": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"system_id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"energy_produced": {
+						"type": "number"
+					},
+					"energy_consumed": {
+						"type": "number"
+					},
+					"datetime": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"system_id",
+					"energy_produced",
+					"energy_consumed"
+				]
+			},
+			"summary": {
+				"type": "object",
+				"properties": {
+					"systemid": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"summarydate": {
+						"type": "string",
+						"format": "date"
+					},
+					"totalenergyproduced": {
+						"type": "number"
+					},
+					"totalenergyconsumed": {
+						"type": "number"
+					}
+				},
+				"required": [
+					"systemid",
+					"summarydate",
+					"totalenergyproduced",
+					"totalenergyconsumed"
+				]
+			},
+			"error": {
+				"type": "object",
+				"properties": {
+					"statusCode": {
+						"type": "number"
+					},
+					"error": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"statusCode",
+					"error",
+					"message"
+				]
+			}
+		}
+	},
+	"paths": {
+		"/api/systems": {
+			"get": {
+				"tags": [
+					"systems"
+				],
+				"description": "Get all systems",
+				"responses": {
+					"200": {
+						"description": "All registered systems",
+						"content": {
+							"application/json": {
+								"schema": {
+									"description": "All registered systems",
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/system"
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"description": "Internal Server Error",
+									"$ref": "#/components/schemas/error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/metrics/{systemId}": {
+			"get": {
+				"tags": [
+					"metrics"
+				],
+				"description": "Get metrics for a system",
+				"parameters": [
+					{
+						"schema": {
+							"type": "string",
+							"format": "date"
+						},
+						"in": "query",
+						"name": "date",
+						"required": true
+					},
+					{
+						"schema": {
+							"type": "string"
+						},
+						"in": "path",
+						"name": "systemId",
+						"required": true
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Metrics for the system",
+						"content": {
+							"application/json": {
+								"schema": {
+									"description": "Metrics for the system",
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/metric"
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"description": "Internal Server Error",
+									"$ref": "#/components/schemas/error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/summary/{systemId}": {
+			"get": {
+				"tags": [
+					"metrics"
+				],
+				"description": "Get summary for a system",
+				"parameters": [
+					{
+						"schema": {
+							"type": "string"
+						},
+						"in": "path",
+						"name": "systemId",
+						"required": true
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Summary for the system",
+						"content": {
+							"application/json": {
+								"schema": {
+									"description": "Summary for the system",
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/summary"
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"description": "Internal Server Error",
+									"$ref": "#/components/schemas/error"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
