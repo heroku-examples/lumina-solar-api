@@ -30,7 +30,7 @@ git push heroku main
 
 Import the database schema
 ```
-heroku run npm run setup
+heroku run npm run-script setup
 ```
 
 Seed the database with example data
